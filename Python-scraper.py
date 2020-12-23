@@ -33,7 +33,7 @@ for anchor in nav_menu.find_all('a'):
     full_link = base + anchor['href']        
     link_dictionary[text] = full_link
 
-#print ra cái link list
+# print ra cái link list
 print(link_dictionary)
 
 # build our split list function
@@ -80,10 +80,10 @@ for row in summary_data:
     elif 'N/A' in row[1]:
         row[1] = np.nan
         
-#print ra ngó thử
+# print ra ngó thử
 print(summary_data)
 
-#SECTION TWO - PARSE THE HOLDING PAGE
+# SECTION TWO - PARSE THE HOLDING PAGE
 
 # define the link to the page
 link = link_dictionary['Holdings']
