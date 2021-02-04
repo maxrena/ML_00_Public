@@ -12,11 +12,17 @@ my_client = MongoClient("mongodb://localhost:27017/")
 kahoot_question_database = my_client['Kahoot_Question_Bank']
 question_col = kahoot_question_database['Questions']
 
+
 def kahoot_details_scrape():
     url = 'https://create.kahoot.it/details/disney/0a39590a-cc49-4222-bf28-dd9da230d6bf'
     kahoot_id = url.split('/')[-1]
     # API link
-    answers_url = 'https://create.kahoot.it/rest/kahoots/{kahoot_id}/card/?includeKahoot=true'.format(kahoot_id=kahoot_id)
+    # link này ổn
+    # answers_url = 'https://create.kahoot.it/rest/kahoots/{kahoot_id}/card/?includeKahoot=true'.format(kahoot_id = kahoot_id)
+
+    # link này làm mẫu về cấu trúc khác nhau
+    # link gốc: https://create.kahoot.it/v2/pages/c17df658-f505-4477-93a6-6c5091a2cd63
+    answers_url = 'https://create.kahoot.it/rest/kahoots/7b27c41f-7683-401c-8ca8-466cd8431028/card/?includeKahoot=true'
     data = requests.get(answers_url).json()
 
     # chỗ này print ra cho dễ hình dung về cấu trúc file Json
@@ -27,53 +33,66 @@ def kahoot_details_scrape():
         for choice in question['choices']:
             if choice['correct']:
                 break
-        print('Q: {:<70} A: {} '.format(question['question'].replace('&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' ')))
-
-    # print hết câu trả lời ra
-    for question in data['kahoot']['questions']:
-        print('Q: {0} \n A: {1}'.format(question['question'].replace('&nbsp;', ' '), question['choices']))
-        question_col.insert_one(question)
-
-
-def kahoot_pages_scrape_with_link(url_id):
-    # API link
-    answers_url = 'https://create.kahoot.it/rest/kahoots/{kahoot_id}/card/?includeKahoot=true'.format(kahoot_id=url_id)
-    data = requests.get(answers_url).json()
-
-    # chỗ này print ra cho dễ hình dung về cấu trúc file Json
-    # print(json.dumps(data, indent=4))
-
-    # print ra câu trả lời đúng thôi
-    for question in data['kahoot']['questions']:
-        for choice in question['choices']:
-            if choice['correct']:
-                break
-        print('Q: {:<70} A: {} '.format(question['question'].replace('&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' ')))
+            print('Q: {:<70} A: {} '.format(question['question'].replace(
+                '&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' ')))
 
     # print hết câu trả lời ra
     for question in data['kahoot']['questions']:
         print('Q: {0} \n A: {1}'.format(
             question['question'].replace('&nbsp;', ' '), question['choices']))
+        question_col.insert_one(question)
+
+    # # check coi quiz phải là quiz hay ko
+    # for question in data['kahoot']['questions']:
+    #     if question['type'] == 'quiz':
+    #         print('Q: {0} \n A: {1}'.format(question['question'].replace('&nbsp;', ' '), question['choices']))
+
+
+def kahoot_pages_scrape_with_link(url_id):
+    # API link
+    answers_url = 'https://create.kahoot.it/rest/kahoots/{kahoot_id}/card/?includeKahoot=true'.format(
+        kahoot_id=url_id)
+    data = requests.get(answers_url).json()
+
+    # chỗ này print ra cho dễ hình dung về cấu trúc file Json
+    # print(json.dumps(data, indent=4))
+
+    # print ra câu trả lời đúng thôi
+    for question in data['kahoot']['questions']:
+        if question['type'] == 'quiz':
+            for choice in question['choices']:
+                if choice['correct']:
+                    break
+            print('Q: {:<70} A: {} '.format(question['question'].replace(
+                '&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' ')))
+
+    # print hết câu trả lời ra
+    for question in data['kahoot']['questions']:
+        if question['type'] == 'quiz':
+            print('Q: {0} \n A: {1}'.format(
+                question['question'].replace('&nbsp;', ' '), question['choices']))
+
+    # gom question answer vào dict để bỏ vào database
 
 
 def kahoot_pages_scrape():
-    pages_url = 'https://create.kahoot.it/pages/0f99068f-a310-4670-86e3-19fd0b05cf85'
-
     # API link
     # link này chỉ cho ra vài thứ để ngắm thôi, như là id, nhưng có lẽ sẽ có ích về sau
     top_kahoot_card_url = 'https://create.kahoot.it/rest/brands/0f99068f-a310-4670-86e3-19fd0b05cf85/kahoots/?limit=100'
     pages_data = requests.get(top_kahoot_card_url).json()
-    
+
     # link này để get dc mấy cái hữu dụng hơn
-    # id_get_url = 'https://create.kahoot.it/rest/brands/0f99068f-a310-4670-86e3-19fd0b05cf85/data/'
-    
+    # link gốc: https://create.kahoot.it/v2/pages/0f99068f-a310-4670-86e3-19fd0b05cf85
+    id_get_url = 'https://create.kahoot.it/rest/brands/0f99068f-a310-4670-86e3-19fd0b05cf85/data/'
+
     # link này là ví dụ cho việc phải sửa lại, thay choices = video, chứng minh về structure khác nhau
     # link này là lỗi vì question đầu là slide
     # id_get_url = 'https://create.kahoot.it/rest/brands/eed4c44b-91b3-44b6-b5bd-9d4785fc578d/data/'
-    
+
     # x-men physical science quiz
+    # link gốc: https://create.kahoot.it/v2/pages/c17df658-f505-4477-93a6-6c5091a2cd63
     # cũng là 1 ví dụ về việc phải tinh chỉnh cấu trúc code để scrape, question 9 là slide
-    id_get_url = 'https://create.kahoot.it/rest/brands/c17df658-f505-4477-93a6-6c5091a2cd63/data/'
+    # id_get_url = 'https://create.kahoot.it/rest/brands/c17df658-f505-4477-93a6-6c5091a2cd63/data/'
     topic_id_pages_data = requests.get(id_get_url).json()
 
     # print(json.dumps(pages_data, indent=4))
