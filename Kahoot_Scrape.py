@@ -68,10 +68,11 @@ def kahoot_pages_scrape():
     # id_get_url = 'https://create.kahoot.it/rest/brands/0f99068f-a310-4670-86e3-19fd0b05cf85/data/'
     
     # link này là ví dụ cho việc phải sửa lại, thay choices = video, chứng minh về structure khác nhau
+    # link này là lỗi vì question đầu là slide
     # id_get_url = 'https://create.kahoot.it/rest/brands/eed4c44b-91b3-44b6-b5bd-9d4785fc578d/data/'
     
     # x-men physical science quiz
-    # cũng là 1 ví dụ về việc phải tinh chỉnh cấu trúc code để scrape
+    # cũng là 1 ví dụ về việc phải tinh chỉnh cấu trúc code để scrape, question 9 là slide
     id_get_url = 'https://create.kahoot.it/rest/brands/c17df658-f505-4477-93a6-6c5091a2cd63/data/'
     topic_id_pages_data = requests.get(id_get_url).json()
 
