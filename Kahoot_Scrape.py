@@ -5,14 +5,18 @@ import re
 from lxml import html
 from lxml import etree
 from bs4 import BeautifulSoup
+from pymongo import MongoClient
 
+# insert vào mongodb
+my_client = MongoClient("mongodb://localhost:27017/")
+kahoot_question_database = my_client['Kahoot_Question_Bank']
+question_col = kahoot_question_database['Questions']
 
 def kahoot_details_scrape():
     url = 'https://create.kahoot.it/details/disney/0a39590a-cc49-4222-bf28-dd9da230d6bf'
     kahoot_id = url.split('/')[-1]
     # API link
-    answers_url = 'https://create.kahoot.it/rest/kahoots/{kahoot_id}/card/?includeKahoot=true'.format(
-        kahoot_id=kahoot_id)
+    answers_url = 'https://create.kahoot.it/rest/kahoots/{kahoot_id}/card/?includeKahoot=true'.format(kahoot_id=kahoot_id)
     data = requests.get(answers_url).json()
 
     # chỗ này print ra cho dễ hình dung về cấu trúc file Json
@@ -23,19 +27,17 @@ def kahoot_details_scrape():
         for choice in question['choices']:
             if choice['correct']:
                 break
-        print('Q: {:<70} A: {} '.format(question['question'].replace(
-            '&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' ')))
+        print('Q: {:<70} A: {} '.format(question['question'].replace('&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' ')))
 
     # print hết câu trả lời ra
     for question in data['kahoot']['questions']:
-        print('Q: {0} \n A: {1}'.format(
-            question['question'].replace('&nbsp;', ' '), question['choices']))
+        print('Q: {0} \n A: {1}'.format(question['question'].replace('&nbsp;', ' '), question['choices']))
+        question_col.insert_one(question)
 
 
 def kahoot_pages_scrape_with_link(url_id):
     # API link
-    answers_url = 'https://create.kahoot.it/rest/kahoots/{kahoot_id}/card/?includeKahoot=true'.format(
-        kahoot_id=url_id)
+    answers_url = 'https://create.kahoot.it/rest/kahoots/{kahoot_id}/card/?includeKahoot=true'.format(kahoot_id=url_id)
     data = requests.get(answers_url).json()
 
     # chỗ này print ra cho dễ hình dung về cấu trúc file Json
@@ -46,8 +48,7 @@ def kahoot_pages_scrape_with_link(url_id):
         for choice in question['choices']:
             if choice['correct']:
                 break
-        print('Q: {:<70} A: {} '.format(question['question'].replace('&nbsp;', ' '),
-                                        choice['answer'].replace('&nbsp;', ' ')))
+        print('Q: {:<70} A: {} '.format(question['question'].replace('&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' ')))
 
     # print hết câu trả lời ra
     for question in data['kahoot']['questions']:
@@ -99,5 +100,5 @@ def kahoot_pages_scrape():
     # phần còn lại chỉ là bỏ id vào link form dạng này rồi scrape bằng function kahoot_pages_scrape()
 
 
-# kahoot_details_scrape()
-kahoot_pages_scrape()
+kahoot_details_scrape()
+# kahoot_pages_scrape()
