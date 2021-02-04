@@ -44,11 +44,11 @@ def kahoot_pages_scrape_with_link(url_id):
     # print(json.dumps(data, indent=4))
 
     # print ra câu trả lời đúng thôi
-    """ for question in data['kahoot']['questions']:
+    for question in data['kahoot']['questions']:
         for choice in question['choices']:
             if choice['correct']:
                 break
-        print('Q: {:<70} A: {} '.format(question['question'].replace('&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' '))) """
+        print('Q: {:<70} A: {} '.format(question['question'].replace('&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' ')))
 
     # print hết câu trả lời ra
     for question in data['kahoot']['questions']:
