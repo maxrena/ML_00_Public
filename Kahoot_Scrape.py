@@ -60,9 +60,17 @@ def kahoot_pages_scrape():
     pages_url = 'https://create.kahoot.it/pages/0f99068f-a310-4670-86e3-19fd0b05cf85'
 
     # API link
+    # link này chỉ cho ra vài thứ để ngắm thôi, như là id, nhưng có lẽ sẽ có ích về sau
     top_kahoot_card_url = 'https://create.kahoot.it/rest/brands/0f99068f-a310-4670-86e3-19fd0b05cf85/kahoots/?limit=100'
-    id_get_url = 'https://create.kahoot.it/rest/brands/0f99068f-a310-4670-86e3-19fd0b05cf85/data/'
     pages_data = requests.get(top_kahoot_card_url).json()
+    
+    # link này để get dc mấy cái hữu dụng hơn
+    # id_get_url = 'https://create.kahoot.it/rest/brands/0f99068f-a310-4670-86e3-19fd0b05cf85/data/'
+    
+    # link này là ví dụ cho việc phải sửa lại, thay choices = video, chứng minh về structure khác nhau
+    # id_get_url = 'https://create.kahoot.it/rest/brands/eed4c44b-91b3-44b6-b5bd-9d4785fc578d/data/'
+    
+    id_get_url = 'https://create.kahoot.it/rest/brands/c17df658-f505-4477-93a6-6c5091a2cd63/data/'
     topic_id_pages_data = requests.get(id_get_url).json()
 
     # print(json.dumps(pages_data, indent=4))
@@ -100,5 +108,5 @@ def kahoot_pages_scrape():
     # phần còn lại chỉ là bỏ id vào link form dạng này rồi scrape bằng function kahoot_pages_scrape()
 
 
-kahoot_details_scrape()
-# kahoot_pages_scrape()
+# kahoot_details_scrape()
+kahoot_pages_scrape()
