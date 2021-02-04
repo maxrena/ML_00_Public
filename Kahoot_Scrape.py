@@ -44,11 +44,11 @@ def kahoot_pages_scrape_with_link(url_id):
     # print(json.dumps(data, indent=4))
 
     # print ra câu trả lời đúng thôi
-    for question in data['kahoot']['questions']:
+    """ for question in data['kahoot']['questions']:
         for choice in question['choices']:
             if choice['correct']:
                 break
-        print('Q: {:<70} A: {} '.format(question['question'].replace('&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' ')))
+        print('Q: {:<70} A: {} '.format(question['question'].replace('&nbsp;', ' '), choice['answer'].replace('&nbsp;', ' '))) """
 
     # print hết câu trả lời ra
     for question in data['kahoot']['questions']:
@@ -70,6 +70,8 @@ def kahoot_pages_scrape():
     # link này là ví dụ cho việc phải sửa lại, thay choices = video, chứng minh về structure khác nhau
     # id_get_url = 'https://create.kahoot.it/rest/brands/eed4c44b-91b3-44b6-b5bd-9d4785fc578d/data/'
     
+    # x-men physical science quiz
+    # cũng là 1 ví dụ về việc phải tinh chỉnh cấu trúc code để scrape
     id_get_url = 'https://create.kahoot.it/rest/brands/c17df658-f505-4477-93a6-6c5091a2cd63/data/'
     topic_id_pages_data = requests.get(id_get_url).json()
 
