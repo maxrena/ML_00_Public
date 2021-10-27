@@ -14,7 +14,7 @@ yf.pdr_override()
 
 # input
 # A.I. Stock
-symbols = ['TCEHY','NVDA','MSFT','TWLO','AMZN','GOOGL','NFLX','CRM','DE','SPLK','VERI','SNPS','QUIK','BRN.AX']
+symbols = ['NVDA','MSFT','TWLO','AMZN','GOOGL','NFLX','CRM','DE','SPLK','VERI','SNPS','QUIK','BRN.AX']
 start = '2010-01-01'
 end = '2020-12-20'
 df = pd.DataFrame()
